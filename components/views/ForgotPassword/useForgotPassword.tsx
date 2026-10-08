@@ -1,4 +1,4 @@
-import { requestPasswordReset } from "@/lib/auth-client";
+// import { requestPasswordReset } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -20,16 +20,16 @@ export const useForgotPassword = () => {
   });
 
   const forgotPasswordService = async (payload: { email: string }) => {
-    const { data, error } = await requestPasswordReset({
-      email: payload.email,
-      redirectTo: `${window.location.origin}/auth/reset-password`,
-    });
+    // const { data, error } = await requestPasswordReset({
+    //   email: payload.email,
+    //   redirectTo: `${window.location.origin}/auth/reset-password`,
+    // });
 
-    if (error) {
-      throw new Error(error.message);
-    }
+    // if (error) {
+    //   throw new Error(error.message);
+    // }
 
-    return data;
+    // return data;
   };
 
   const {
