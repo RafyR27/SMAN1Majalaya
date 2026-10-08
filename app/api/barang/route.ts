@@ -268,6 +268,104 @@ export async function POST(req: Request) {
 
     const { items } = validated.data;
 
+    const dataBarang = [];
+
+    for (const item of items) {
+          const [barang, rekening, kategori, satuan] = await Promise.all([
+            prisma.barang.findFirst({
+              where: {
+                namaBarang: item.namaBarang,
+                rekening: {
+                  id: item.rekeningId,
+                },
+                kategori: {
+                  id: item.kategoriId,
+                },
+              },
+
+              select: {
+                namaBarang: true,
+                kategori: true,
+                rekening: true,
+              },
+            }),
+            prisma.rekening.findFirst({
+              where: {
+                id: item.rekeningId,
+              },
+            }),
+            prisma.kategori.findFirst({
+              where: {
+                id: item.kategoriId,
+              },
+            }),
+            prisma.satuan.findFirst({
+              where: {
+                id: item.satuanId,
+              },
+            }),
+          ]);
+    
+          if (barang) {
+            return NextResponse.json(
+              {
+                status: 400,
+                code: "BARANG_IS_EXIST",
+                message: `${barang.namaBarang} sudah ada pada kode rekening "${barang.rekening.kodeRekening}" dan kategori "${barang.kategori.kategori}"`,
+                data: null,
+              },
+              { status: 400 },
+            );
+          }
+    
+          if (!rekening) {
+            return NextResponse.json(
+              {
+                status: 400,
+                code: "REKENING_NOT_FOUND",
+                message: "Kode rekening tidak ditemukan",
+                data: null,
+              },
+              { status: 400 },
+            );
+          }
+    
+          if (!kategori) {
+            return NextResponse.json(
+              {
+                status: 400,
+                code: "KATEGORI_NOT_FOUND",
+                message: "Kategori tidak ditemukan",
+                data: null,
+              },
+              { status: 400 },
+            );
+          }
+    
+          if (!satuan) {
+            return NextResponse.json(
+              {
+                status: 400,
+                code: "SATUAN_NOT_FOUND",
+                message: "Satuan tidak ditemukan",
+                data: null,
+              },
+              { status: 400 },
+            );
+          }
+    
+          dataBarang.push({
+            namaBarang: item.namaBarang,
+            rekeningId: rekening.id,
+            kategoriId: kategori.id,
+            satuanId: satuan.id,
+            merk: item.merk,
+            sumber: item.sumber,
+            harga: item.harga,
+            tanggal: item.tanggal,
+          });
+        }
+
     const barang = await prisma.barang.createMany({
       data: items.map((item) => ({
         namaBarang: item.namaBarang,

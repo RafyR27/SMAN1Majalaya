@@ -244,7 +244,13 @@ export default function FilterTransaksiDialog({
                       onSelect={(date) => {
                         setLocalFilters((prev) => ({
                           ...prev,
-                          startDate: date ? formatDate(date) : undefined,
+                          startDate: date
+                            ? [
+                                date.getFullYear(),
+                                String(date.getMonth() + 1).padStart(2, "0"),
+                                String(date.getDate()).padStart(2, "0"),
+                              ].join("-")
+                            : undefined,
                         }));
                         setIsStartDateOpen(false);
                       }}
@@ -314,7 +320,13 @@ export default function FilterTransaksiDialog({
                       onSelect={(date) => {
                         setLocalFilters((prev) => ({
                           ...prev,
-                          endDate: date ? formatDate(date) : undefined,
+                          endDate: date
+                            ? [
+                                date.getFullYear(),
+                                String(date.getMonth() + 1).padStart(2, "0"),
+                                String(date.getDate()).padStart(2, "0"),
+                              ].join("-")
+                            : undefined,
                         }));
                         setIsEndDateOpen(false);
                       }}
