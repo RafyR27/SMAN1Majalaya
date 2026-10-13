@@ -29,20 +29,32 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center px-5 lg:px-10">
-        <div className="w-full h-auto max-w-lg lg:max-w-sm flex flex-col justify-center items-center gap-5 py-10">
+      <div className="flex flex-col justify-between min-h-screen p-6 sm:p-8 lg:p-10 bg-background">
+        {/* Header Pojok Kiri Atas (Logo + Nama Sekolah) */}
+        <div className="flex items-center gap-3">
           <Image
             src="/logo-sekolah.jpg"
             alt="Logo SMAN 1 Majalaya"
-            width={110}
-            height={110}
+            width={44}
+            height={44}
             priority
             className="object-contain"
           />
+          <div className="flex flex-col">
+            <span className="font-bold text-sm sm:text-base leading-tight tracking-tight text-foreground">
+              SMAN 1 Majalaya
+            </span>
+            <span className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
+              Kabupaten Karawang
+            </span>
+          </div>
+        </div>
 
+        {/* Form Login */}
+        <div className="w-full max-w-lg lg:max-w-sm mx-auto my-auto flex flex-col justify-center items-center gap-5 py-8">
           <div className="space-y-1 text-center">
-            <h1 className="font-bold text-[1.1rem]">Masuk</h1>
-            <p className="text-muted-foreground text-[0.9rem] lg:text-[0.9rem] max-w-80 lg:max-w-full">
+            <h1 className="font-bold text-xl sm:text-2xl text-foreground">Masuk</h1>
+            <p className="text-muted-foreground text-sm max-w-80 lg:max-w-full">
               Masukkan email dan password anda
             </p>
           </div>

@@ -4,13 +4,11 @@ import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import instance from "@/lib/instance";
 import {
-  MessageSquare,
-  ShoppingCart,
-  User,
-  BarChart3,
-  ArrowLeftRight,
+  Boxes,
+  Warehouse,
   ArrowDownToLine,
   ArrowUpFromLine,
+  ArrowLeftRight,
   Package,
   FileSpreadsheet,
   AlertTriangle,
@@ -19,6 +17,7 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -80,7 +79,7 @@ export default function DashboardSection() {
         });
         return response.data;
       },
-      placeholderData: keepPreviousData, // Menghilangkan flicker/skeleton saat berpindah halaman
+      placeholderData: keepPreviousData,
       staleTime: 30_000,
       retry: 1,
     });
@@ -126,38 +125,34 @@ export default function DashboardSection() {
   const pagination = stats?.lowStockPagination;
   const pageSize = pagination?.pageSize ?? 5;
 
-  // 4 Card Metrik Statistik Utama
+  // 4 Card Metrik Statistik Utama (Warna Dihilangkan - 100% Netral)
   const cards = [
     {
       title: "TOTAL ITEMS",
       value: stats?.totalItems ?? 0,
-      icon: MessageSquare,
-      bgColor: "bg-[#f39c12]",
+      icon: Boxes,
     },
     {
       title: "TOTAL STOCK",
       value: stats?.totalStock ?? 0,
-      icon: ShoppingCart,
-      bgColor: "bg-[#00c0ef]",
+      icon: Warehouse,
     },
     {
       title: "STOCK IN",
       value: stats?.stockIn ?? 0,
-      icon: User,
-      bgColor: "bg-[#00a65a]",
+      icon: ArrowDownToLine,
     },
     {
       title: "STOCK OUT",
       value: stats?.stockOut ?? 0,
-      icon: BarChart3,
-      bgColor: "bg-[#dd4b39]",
+      icon: ArrowUpFromLine,
     },
   ];
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-6 p-4 md:p-6 max-w-7xl w-full mx-auto">
-        {/* ─── 4 METRIC CARDS ─── */}
+        {/* ─── 4 METRIC CARDS (MONOKROM / TANPA WARNA) ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {cards.map((card, idx) => {
             const Icon = card.icon;
@@ -165,12 +160,11 @@ export default function DashboardSection() {
             return (
               <div
                 key={idx}
-                className="bg-card border border-border/80 rounded-md shadow-xs overflow-hidden flex items-stretch transition-transform hover:-translate-y-0.5"
+                className="bg-card border border-border/80 rounded-lg shadow-xs overflow-hidden flex items-stretch transition-transform hover:-translate-y-0.5"
               >
-                <div
-                  className={`w-24 sm:w-28 ${card.bgColor} flex items-center justify-center text-white shrink-0`}
-                >
-                  <Icon className="size-10 sm:size-12 stroke-[2.2]" />
+
+                <div className="w-20 sm:w-24 bg-muted/60 border-r border-border/70 flex items-center justify-center shrink-0">
+                  <Icon className="size-8 sm:size-9 stroke-[2] text-foreground" />
                 </div>
 
                 <div className="flex-1 py-3 px-4 flex flex-col justify-center">
@@ -181,7 +175,7 @@ export default function DashboardSection() {
                     </div>
                   ) : (
                     <>
-                      <span className="text-2xl sm:text-3xl font-normal text-foreground leading-none">
+                      <span className="text-2xl sm:text-3xl font-semibold text-foreground leading-none">
                         {card.value.toLocaleString("id-ID")}
                       </span>
                       <span className="text-xs text-muted-foreground font-medium mt-1 tracking-wider">
@@ -203,10 +197,10 @@ export default function DashboardSection() {
               className="w-full justify-between h-12 px-4 rounded-lg bg-card hover:bg-muted/50 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
-                <Package className="h-4 w-4 text-primary" />
-                <span className="font-medium text-sm">Data Barang</span>
+                <Package className="h-4 w-4 text-foreground" />
+                <span className="font-medium text-sm text-foreground">Data Barang</span>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
           </Link>
 
@@ -216,10 +210,10 @@ export default function DashboardSection() {
               className="w-full justify-between h-12 px-4 rounded-lg bg-card hover:bg-muted/50 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
-                <ArrowLeftRight className="h-4 w-4 text-emerald-600" />
-                <span className="font-medium text-sm">Barang Masuk & Keluar</span>
+                <ArrowLeftRight className="h-4 w-4 text-foreground" />
+                <span className="font-medium text-sm text-foreground">Barang Masuk & Keluar</span>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
           </Link>
 
@@ -229,22 +223,22 @@ export default function DashboardSection() {
               className="w-full justify-between h-12 px-4 rounded-lg bg-card hover:bg-muted/50 cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
-                <FileSpreadsheet className="h-4 w-4 text-amber-600" />
-                <span className="font-medium text-sm">Mutasi</span>
+                <FileSpreadsheet className="h-4 w-4 text-foreground" />
+                <span className="font-medium text-sm text-foreground">Mutasi</span>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
           </Link>
         </div>
 
-        {/* ─── DATA PENDUKUNG: ALERT STOK & TRANSAKSI TERAKHIR ─── */}
+        {/* ─── DUA KOTAK DI BAWAH ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Stok Kritis / Perlu Restock */}
+          {/* Kotak 1: Barang Perlu Restock */}
           <div className="border border-border/80 rounded-xl bg-card p-5 space-y-4 shadow-xs flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="size-4 text-amber-500" />
+                  <AlertTriangle className="size-4 text-foreground" />
                   <h3 className="font-semibold text-sm text-foreground">
                     Barang Perlu Restock
                   </h3>
@@ -306,13 +300,7 @@ export default function DashboardSection() {
                           </div>
                         </div>
 
-                        <span
-                          className={`font-bold px-2 py-1 rounded-md uppercase tracking-wider text-[11px] ${
-                            item.stok === 0
-                              ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                          }`}
-                        >
+                        <span className="font-bold px-2 py-1 rounded-md uppercase tracking-wider text-[11px] bg-muted border border-border text-foreground">
                           Sisa {item.stok} {item.satuan?.satuan ?? ""}
                         </span>
                       </div>
@@ -351,7 +339,7 @@ export default function DashboardSection() {
                     disabled={restockPage <= 1 || isFetching}
                     className="h-7 w-7 p-0 cursor-pointer"
                   >
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-3.5 w-3.5 text-foreground" />
                   </Button>
                   <span className="px-1 font-medium text-foreground">
                     {restockPage} / {pagination.totalPages}
@@ -369,22 +357,23 @@ export default function DashboardSection() {
                     }
                     className="h-7 w-7 p-0 cursor-pointer"
                   >
-                    <ChevronRight className="h-3.5 w-3.5" />
+                    <ChevronRight className="h-3.5 w-3.5 text-foreground" />
                   </Button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Aktivitas Transaksi Terbaru */}
+          {/* Kotak 2: Aktivitas Transaksi Terakhir */}
           <div className="border border-border/80 rounded-xl bg-card p-5 space-y-4 shadow-xs">
             <div className="flex items-center justify-between pb-2 border-b">
               <div className="flex items-center gap-2">
-                <BarChart3 className="size-4 text-primary" />
+                <History className="size-4 text-foreground" />
                 <h3 className="font-semibold text-sm text-foreground">
                   Aktivitas Transaksi Terakhir
                 </h3>
               </div>
+ 
               <Link
                 href="/barang-masuk-keluar"
                 className="text-xs text-primary hover:underline font-medium"
@@ -408,24 +397,14 @@ export default function DashboardSection() {
                     return (
                       <div
                         key={`${act.type}-${act.id}`}
-                        className={`flex items-center justify-between p-2.5 rounded-lg border text-xs ${
-                          isMasuk
-                            ? "bg-emerald-500/5 border-emerald-500/20"
-                            : "bg-rose-500/5 border-rose-500/20"
-                        }`}
+                        className="flex items-center justify-between p-2.5 rounded-lg border border-border/80 bg-muted/40 text-xs"
                       >
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`h-7 w-7 rounded-md flex items-center justify-center shrink-0 ${
-                              isMasuk
-                                ? "bg-emerald-500/10 text-emerald-600"
-                                : "bg-rose-500/10 text-rose-600"
-                            }`}
-                          >
+                        <div className="flex items-center gap-2.5">
+                          <div className="h-7 w-7 rounded-md bg-background flex items-center justify-center shrink-0 border border-border/60">
                             {isMasuk ? (
-                              <ArrowDownToLine className="size-3.5" />
+                              <ArrowDownToLine className="size-3.5 text-foreground" />
                             ) : (
-                              <ArrowUpFromLine className="size-3.5" />
+                              <ArrowUpFromLine className="size-3.5 text-foreground" />
                             )}
                           </div>
                           <div>
@@ -437,9 +416,12 @@ export default function DashboardSection() {
                             </span>
                           </div>
                         </div>
+
                         <span
                           className={`font-bold uppercase ${
-                            isMasuk ? "text-emerald-600" : "text-rose-600"
+                            isMasuk
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-rose-600 dark:text-rose-400"
                           }`}
                         >
                           {isMasuk ? `+${act.jumlah}` : `-${act.jumlah}`}{" "}
