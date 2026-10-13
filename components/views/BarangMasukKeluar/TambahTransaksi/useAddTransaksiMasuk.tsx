@@ -1,6 +1,7 @@
 "use client";
 
 import instance from "@/lib/instance";
+import { normalizeOptionalString } from "@/lib/string";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -9,16 +10,17 @@ import * as z from "zod";
 
 const transaksiMasukItemSchema = z.object({
   barangId: z.string().min(1, "Barang wajib dipilih"),
-  namaBarang: z.string().optional(), // display only
-  kodeRekening: z.string().optional(), // display only (disabled)
-  kategori: z.string().optional(), // display only (disabled)
-  hargaSatuan: z.number().optional(), // display only (disabled)
-  stok: z.number().optional(), // display only
-  sumber: z.string().optional(), // auto from barang (disabled)
-  merk: z.string().optional(), // auto from barang (disabled)
-  satuanNama: z.string().optional(), // display only
+  namaBarang: z.string().nullable().optional(), // display only
+  kodeRekening: z.string().nullable().optional(), // display only (disabled)
+  kategori: z.string().nullable().optional(), // display only (disabled)
+  hargaSatuan: z.number().nullable().optional(), // display only (disabled)
+  stok: z.number().nullable().optional(), // display only
+  sumber: z.string().nullable().optional(), // auto from barang (disabled)
+  merk: z.string().nullable().optional(), // auto from barang (disabled)
+  satuanNama: z.string().nullable().optional(), // display only
   volume: z.number().int().min(1, "Volume minimal 1"),
-  tanggal: z.date("Tanggal wajib diisi"),
+  tanggal: z.date({ message: "Tanggal wajib diisi" }),
+  oleh: z.string().trim().nullable().optional(),
 });
 
 const formSchema = z.object({
@@ -40,6 +42,7 @@ export const defaultItem: ITransaksiMasukItem = {
   satuanNama: "",
   volume: 1,
   tanggal: new Date(),
+  oleh: "",
 };
 
 export const useAddTransaksiMasuk = () => {
@@ -65,6 +68,7 @@ export const useAddTransaksiMasuk = () => {
           barangId: item.barangId,
           volume: item.volume,
           tanggal: item.tanggal,
+          oleh: normalizeOptionalString(item.oleh),
         })),
       },
     });

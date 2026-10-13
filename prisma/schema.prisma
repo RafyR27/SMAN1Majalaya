@@ -145,6 +145,7 @@ model TransaksiMasuk {
   total       Int
   sumber      String?
   merk        String?
+  oleh        String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

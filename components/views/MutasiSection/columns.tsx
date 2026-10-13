@@ -3,10 +3,14 @@
 import { LegacyColumnDef } from "@tanstack/react-table/legacy";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MutasiItem } from "@/types/mutasi";
+import Link from "next/link";
+import { FileText } from "lucide-react";
 
 export const Columns = (
   pageIndex: number = 0,
   pageSize: number = 10,
+  bulan?: number,
+  tahun?: number,
 ): LegacyColumnDef<MutasiItem, unknown>[] => [
   {
     id: "select",
@@ -144,5 +148,27 @@ export const Columns = (
         </div>
       );
     },
+  },
+  {
+    id: "aksi",
+    header: () => <div className="text-center">Aksi</div>,
+    cell: ({ row }) => {
+      const b = bulan ?? new Date().getMonth() + 1;
+      const t = tahun ?? new Date().getFullYear();
+      return (
+        <div className="flex items-center justify-center">
+          <Link
+            href={`/mutasi/kartu-persediaan?barangId=${row.original.id}&bulan=${b}&tahun=${t}`}
+            className="inline-flex items-center justify-center rounded-lg h-7 px-2 text-xs font-medium text-primary hover:bg-primary/10 gap-1.5 transition-colors"
+            title="Cetak Kartu Persediaan Barang"
+          >
+            <FileText className="h-3.5 w-3.5" />
+            <span>Kartu Stok</span>
+          </Link>
+        </div>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
   },
 ];

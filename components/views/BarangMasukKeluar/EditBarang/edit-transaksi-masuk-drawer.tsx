@@ -245,6 +245,38 @@ export default function EditTransaksiMasukDrawer({
             />
           </div>
 
+          {/* Diserahkan Oleh */}
+          <Controller
+            control={control}
+            name="oleh"
+            render={({ field: f, fieldState }) => (
+              <Field className="space-y-1.5">
+                <FieldLabel
+                  htmlFor="oleh-edit-masuk"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Diserahkan Oleh{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (Opsional)
+                  </span>
+                </FieldLabel>
+                <FieldContent>
+                  <Input
+                    {...f}
+                    value={f.value ?? ""}
+                    id="oleh-edit-masuk"
+                    placeholder="Contoh: Pak Budi, Staf TU, CV. Mandiri..."
+                    className="rounded-lg h-9 text-sm"
+                    aria-invalid={!!fieldState.error}
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </FieldContent>
+              </Field>
+            )}
+          />
+
           {/* Subtotal preview */}
           {subtotal > 0 && (
             <div className="rounded-lg bg-muted-foreground/5 px-3 py-2 text-sm">

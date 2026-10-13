@@ -1,6 +1,7 @@
 "use client";
 
 import instance from "@/lib/instance";
+import { normalizeOptionalString } from "@/lib/string";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -12,8 +13,8 @@ import { useEffect } from "react";
 const formEditTransaksiKeluarSchema = z.object({
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.date({ message: "Tanggal wajib diisi" }),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 export type IFormEditTransaksiKeluar = z.infer<
@@ -60,8 +61,8 @@ export const useEditTransaksiKeluar = ({
       id: transaksi?.id,
       volume: payload.volume,
       tanggal: payload.tanggal,
-      kepada: payload.kepada || undefined,
-      tujuan: payload.tujuan || undefined,
+      kepada: normalizeOptionalString(payload.kepada),
+      tujuan: normalizeOptionalString(payload.tujuan),
     });
   };
 

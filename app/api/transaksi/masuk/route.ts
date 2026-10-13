@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { normalizeOptionalString } from "@/lib/string";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import * as z from "zod";
@@ -131,6 +132,7 @@ const transaksiMasukItemSchema = z.object({
   barangId: z.string().min(1, "Barang wajib dipilih"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
+  oleh: z.string().trim().nullable().optional(),
 });
 
 const transaksiMasukBulkSchema = z.object({
@@ -226,6 +228,7 @@ export async function POST(req: Request) {
             total,
             sumber: barang.sumber ?? null,
             merk: barang.merk ?? null,
+            oleh: normalizeOptionalString(item.oleh),
             createdAt: item.tanggal,
           },
         });
@@ -265,6 +268,7 @@ const transaksiMasukEditSchema = z.object({
   id: z.string().min(1, "ID transaksi wajib diisi"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
+  oleh: z.string().trim().nullable().optional(),
 });
 
 export async function PUT(req: Request) {
@@ -302,7 +306,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    const { id, volume: newVolume, tanggal } = validated.data;
+    const { id, volume: newVolume, tanggal, oleh } = validated.data;
 
     // Fetch transaksi masuk beserta barang terkait
     const transaksi = await prisma.transaksiMasuk.findUnique({
@@ -348,6 +352,7 @@ export async function PUT(req: Request) {
         data: {
           jumlah: newVolume,
           total: newTotal,
+          oleh: oleh !== undefined ? normalizeOptionalString(oleh) : undefined,
           createdAt: tanggal,
         },
       }),

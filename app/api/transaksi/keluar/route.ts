@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { normalizeOptionalString } from "@/lib/string";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import * as z from "zod";
@@ -143,8 +144,8 @@ const transaksiKeluarSchema = z.object({
   barangId: z.string().min(1, "Barang wajib dipilih"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 const transaksiKeluarPayloadSchema = z.object({
@@ -228,8 +229,8 @@ export async function POST(req: Request) {
           jumlah: item.volume,
           harga,
           total,
-          kepada: item.kepada ?? null,
-          tujuan: item.tujuan ?? null,
+          kepada: normalizeOptionalString(item.kepada),
+          tujuan: normalizeOptionalString(item.tujuan),
           createdAt: item.tanggal,
         },
       }),
@@ -266,8 +267,8 @@ const transaksiKeluarEditSchema = z.object({
   id: z.string().min(1, "ID transaksi wajib diisi"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 export async function PUT(req: Request) {
@@ -350,8 +351,8 @@ export async function PUT(req: Request) {
         data: {
           jumlah: newVolume,
           total: newTotal,
-          kepada: kepada ?? null,
-          tujuan: tujuan ?? null,
+          kepada: normalizeOptionalString(kepada),
+          tujuan: normalizeOptionalString(tujuan),
           createdAt: tanggal,
         },
       }),
