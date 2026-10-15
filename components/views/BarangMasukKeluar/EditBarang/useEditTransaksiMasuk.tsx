@@ -1,7 +1,6 @@
 "use client";
 
 import instance from "@/lib/instance";
-import { normalizeOptionalString } from "@/lib/string";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -58,7 +57,7 @@ export const useEditTransaksiMasuk = ({
       id: transaksi?.id,
       volume: payload.volume,
       tanggal: payload.tanggal,
-      oleh: normalizeOptionalString(payload.oleh),
+      oleh: payload.oleh || null,
     });
   };
 

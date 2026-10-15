@@ -1,7 +1,6 @@
 "use client";
 
 import instance from "@/lib/instance";
-import { normalizeOptionalString } from "@/lib/string";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -68,7 +67,7 @@ export const useAddTransaksiMasuk = () => {
           barangId: item.barangId,
           volume: item.volume,
           tanggal: item.tanggal,
-          oleh: normalizeOptionalString(item.oleh),
+          oleh: item.oleh || null,
         })),
       },
     });

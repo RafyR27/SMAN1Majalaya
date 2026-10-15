@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { normalizeOptionalString } from "@/lib/string";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import * as z from "zod";
@@ -228,7 +227,7 @@ export async function POST(req: Request) {
             total,
             sumber: barang.sumber ?? null,
             merk: barang.merk ?? null,
-            oleh: normalizeOptionalString(item.oleh),
+            oleh: item.oleh || null,
             createdAt: item.tanggal,
           },
         });
@@ -352,7 +351,7 @@ export async function PUT(req: Request) {
         data: {
           jumlah: newVolume,
           total: newTotal,
-          oleh: oleh !== undefined ? normalizeOptionalString(oleh) : undefined,
+          oleh: oleh !== undefined ? (oleh || null) : undefined,
           createdAt: tanggal,
         },
       }),
