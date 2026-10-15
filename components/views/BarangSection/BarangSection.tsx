@@ -75,7 +75,7 @@ export default function BarangSectionView() {
           <div className="flex flex-col md:flex-row justify-between gap-4">
             <div className="space-y-1">
               <h2 className="text-2xl font-bold tracking-tight">Data Barang</h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Kelola data barang dan inventaris operasional sekolah.
               </p>
             </div>

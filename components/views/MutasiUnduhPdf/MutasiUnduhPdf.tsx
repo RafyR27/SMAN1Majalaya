@@ -11,6 +11,7 @@ import { ArrowLeft, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { formatRupiah } from "@/lib/rupiah-foramatted";
+import Image from "next/image";
 
 const BULAN_NAMA = [
   "Januari",
@@ -84,7 +85,7 @@ export default function MutasiUnduhPdfView() {
           TOOLBAR — Tidak ikut tercetak
       ==================================================== */}
       <div className="print:hidden sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border shadow-sm">
-        <div className="max-w-[1100px] mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="max-w-275 mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Button
             variant="ghost"
             size="sm"
@@ -149,53 +150,51 @@ export default function MutasiUnduhPdfView() {
           ────────────────────────────────────────────── */}
             <div className="flex items-center gap-3 mb-1">
               {/* Logo placeholder */}
-              <div
-                className="shrink-0 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center"
-                style={{ fontSize: 9, textAlign: "center", lineHeight: "1.2" }}
-              >
-                <span className="font-bold text-[8px] leading-tight text-center px-1">
-                  LOGO
-                  <br />
-                  DINAS
-                </span>
+              <div className="shrink-0">
+                <Image
+                  src="/logo_gemah_ripah.webp"
+                  alt="Logo Gemah Ripah"
+                  width={70}
+                  height={70}
+                  className="rounded-lg"
+                />
               </div>
 
               {/* Teks Kop */}
-              <div className="flex-1 text-center">
-                <p className="text-[11px] font-normal tracking-wide">
+              <div className="flex-1 text-center leading-tight">
+                <p className="text-[15px] font-bold tracking-wide">
                   PEMERINTAH DAERAH PROVINSI JAWA BARAT
                 </p>
-                <p className="text-[11px] font-normal tracking-wide">
+                <p className="text-[15px] font-bold tracking-wide">
                   DINAS PENDIDIKAN
                 </p>
-                <p className="text-[15px] font-bold tracking-wide uppercase">
-                  SMA NEGERI 1 MAJALAYA
+                <p className="text-[15px] font-bold tracking-wide">
+                  CABANG DINAS PENDIDIKAN WILAYAH IV
                 </p>
-                <p className="text-[10px] font-normal">
-                  Perum Citra Kebun Mas , Kec. Majalaya, Kab. Karawang, Prov.
-                  Jawa Barat
+                <p className="text-[18px] font-bold tracking-wide uppercase">
+                  SEKOLAH MENENGAH ATAS NEGERI 1 MAJALAYA
                 </p>
-                <p className="text-[10px] font-normal">
-                  Telepon: (022) 5951089 &nbsp;|&nbsp; Email:
-                  sman1majalaya@gmail.com
-                </p>
+                <div className="mt-2">
+                  <p className="text-[10px] font-normal">
+                    Perum Citra Kebun Mas Desa Bengle Kecamatan Majalaya
+                    Kabupaten Karawang 41355
+                  </p>
+                  <p className="text-[10px] font-normal">
+                    Web: https://sman1majalayakrw.sch.id E-mail:
+                    smansatumajalaya.karawang@gmail.com
+                  </p>
+                  <p className="text-[10px] font-normal">
+                    No.Telepon : ( 0267 ) 8402699
+                  </p>
+                </div>
               </div>
 
               {/* Kanan — logo Jawa Barat placeholder */}
-              <div
-                className="shrink-0 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center"
-                style={{ fontSize: 9, textAlign: "center", lineHeight: "1.2" }}
-              >
-                <span className="font-bold text-[8px] leading-tight text-center px-1">
-                  LOGO
-                  <br />
-                  JABAR
-                </span>
-              </div>
+              <div className="shrink-0 w-12 h-12 "></div>
             </div>
 
             {/* Garis ganda KOP */}
-            <div className="border-t-2 border-black mt-2 mb-5" />
+            <div className="border-t border-black mt-2 mb-5" />
 
             {/* ──────────────────────────────────────────────
               JUDUL & SUB-INFO
@@ -241,56 +240,56 @@ export default function MutasiUnduhPdfView() {
                 <tr>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     No
                   </th>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black  font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Nama Barang
                   </th>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black  font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Kategori
                   </th>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black  font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Kode Rekening
                   </th>
                   <th
                     colSpan={2}
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Saldo Awal
                   </th>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Masuk (Qty)
                   </th>
                   <th
                     rowSpan={2}
-                    className="border border-black bg-gray-800 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Keluar (Qty)
                   </th>
                   <th
                     colSpan={2}
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1.5 px-1"
+                    className="border border-black font-bold uppercase text-center py-1.5 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Saldo Akhir
@@ -299,25 +298,25 @@ export default function MutasiUnduhPdfView() {
                 {/* Baris sub-header */}
                 <tr>
                   <th
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1 px-1"
+                    className="border border-black font-bold uppercase text-center py-1 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Qty
                   </th>
                   <th
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1 px-1"
+                    className="border border-black font-bold uppercase text-center py-1 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Rp
                   </th>
                   <th
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1 px-1"
+                    className="border border-black font-bold uppercase text-center py-1 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Qty
                   </th>
                   <th
-                    className="border border-black bg-gray-700 text-white font-bold uppercase text-center py-1 px-1"
+                    className="border border-black font-bold uppercase text-center py-1 px-1"
                     style={{ fontSize: 7.5 }}
                   >
                     Rp
@@ -338,10 +337,7 @@ export default function MutasiUnduhPdfView() {
                   </tr>
                 ) : (
                   items.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                    >
+                    <tr key={item.id}>
                       <td className="border border-black text-center py-1 px-1">
                         {idx + 1}
                       </td>
@@ -369,7 +365,7 @@ export default function MutasiUnduhPdfView() {
                             +{item.masuk.toLocaleString("id-ID")}
                           </span>
                         ) : (
-                          <span className="text-gray-400">0</span>
+                          <span>0</span>
                         )}
                       </td>
                       {/* Keluar */}
@@ -379,7 +375,7 @@ export default function MutasiUnduhPdfView() {
                             {item.keluar.toLocaleString("id-ID")}
                           </span>
                         ) : (
-                          <span className="text-gray-400">0</span>
+                          <span>0</span>
                         )}
                       </td>
                       {/* Saldo Akhir Qty */}

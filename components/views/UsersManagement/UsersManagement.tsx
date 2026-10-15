@@ -60,7 +60,7 @@ export default function UsersManagementView() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Manajemen Pengguna
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Kelola data akun pengguna.
               </p>
             </div>

@@ -23,4 +23,15 @@ type ProfileData = {
   createdAt: Date;
 };
 
-export { ILogin, SessionUser, ProfileData };
+type IEditProfile = {
+  name: string;
+  noHP: string;
+};
+
+interface ISetPassword {
+  oldPassword: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export { ILogin, SessionUser, ProfileData, IEditProfile, ISetPassword };

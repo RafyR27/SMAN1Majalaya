@@ -71,3 +71,53 @@ export interface MutasiPdfResponse {
   };
 }
 
+export interface MutasiCsvItem {
+  id: string;
+  kodeRekening: string;
+  namaBarang: string;
+  kategori: string;
+  merk: string;
+  sumber: string;
+  satuan: string;
+  // Saldo Awal
+  saldoAwalVolume: number;
+  saldoAwalSatuan: string;
+  saldoAwalHargaSatuan: number;
+  saldoAwalJumlah: number;
+  // Penambahan
+  penambahanVolume: number;
+  penambahanSatuan: string;
+  penambahanHargaSatuan: number;
+  penambahanJumlah: number;
+  // Pengurangan
+  penguranganVolume: number;
+  penguranganSatuan: string;
+  penguranganHargaSatuan: number;
+  penguranganJumlah: number;
+  // Saldo Akhir
+  saldoAkhirVolume: number;
+  saldoAkhirSatuan: string;
+  saldoAkhirHargaSatuan: number;
+  saldoAkhirJumlah: number;
+}
+
+export interface MutasiCsvMeta {
+  saldoAwalLabel: string;
+  saldoAkhirLabel: string;
+  periodeLabel: string;
+  namaFile: string;
+}
+
+export interface MutasiCsvResponse {
+  status: number;
+  message: string;
+  data: {
+    items: MutasiCsvItem[];
+    meta: MutasiCsvMeta;
+  };
+  period: {
+    bulan: number;
+    tahun: number;
+  };
+}
+

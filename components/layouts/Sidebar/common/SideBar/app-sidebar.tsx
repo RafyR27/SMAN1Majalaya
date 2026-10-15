@@ -18,6 +18,7 @@ import {
 import { SIDEBAR_CONTENT } from "./sidebarContent.constants";
 import { SessionUser } from "@/types/user";
 import { NavSecondary } from "./NavSection/nav-secondary";
+import Image from "next/image";
 
 export function AppSidebar({
   user,
@@ -41,8 +42,14 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<a href="/admin/dashboard" />}
             >
+              <Image
+                src={"/logo.png"}
+                alt="SMAN 1 Majalaya"
+                width={100}
+                height={100}
+                className="w-5.5"
+              />
               <span className="text-base font-semibold">SMAN 1 Majalaya</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -79,6 +79,7 @@ export async function GET(req: Request) {
       orderBy: [
         { rekening: { kodeRekening: "asc" } },
         { namaBarang: "asc" },
+        { id: "asc" },
       ],
       select: {
         id: true,
