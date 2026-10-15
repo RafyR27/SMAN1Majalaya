@@ -143,8 +143,8 @@ const transaksiKeluarSchema = z.object({
   barangId: z.string().min(1, "Barang wajib dipilih"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 const transaksiKeluarPayloadSchema = z.object({
@@ -228,8 +228,8 @@ export async function POST(req: Request) {
           jumlah: item.volume,
           harga,
           total,
-          kepada: item.kepada ?? null,
-          tujuan: item.tujuan ?? null,
+          kepada: item.kepada || null,
+          tujuan: item.tujuan || null,
           createdAt: item.tanggal,
         },
       }),
@@ -266,8 +266,8 @@ const transaksiKeluarEditSchema = z.object({
   id: z.string().min(1, "ID transaksi wajib diisi"),
   volume: z.number().int().min(1, "Volume minimal 1"),
   tanggal: z.coerce.date(),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 export async function PUT(req: Request) {
@@ -350,8 +350,8 @@ export async function PUT(req: Request) {
         data: {
           jumlah: newVolume,
           total: newTotal,
-          kepada: kepada ?? null,
-          tujuan: tujuan ?? null,
+          kepada: kepada !== undefined ? (kepada || null) : undefined,
+          tujuan: tujuan !== undefined ? (tujuan || null) : undefined,
           createdAt: tanggal,
         },
       }),

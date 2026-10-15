@@ -320,7 +320,10 @@ export default function AddTransaksiKeluarDrawer({
                     htmlFor="kepada-keluar"
                     className="text-sm font-semibold text-foreground"
                   >
-                    Diberikan Kepada
+                    Diberikan Kepada{" "}
+                    <span className="text-xs font-normal text-muted-foreground">
+                      (Opsional)
+                    </span>
                   </FieldLabel>
                   <FieldContent>
                     <Input
@@ -348,7 +351,10 @@ export default function AddTransaksiKeluarDrawer({
                     htmlFor="tujuan-keluar"
                     className="text-sm font-semibold text-foreground"
                   >
-                    Tujuan
+                    Tujuan{" "}
+                    <span className="text-xs font-normal text-muted-foreground">
+                      (Opsional)
+                    </span>
                   </FieldLabel>
                   <FieldContent>
                     <Input

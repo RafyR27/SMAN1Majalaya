@@ -105,7 +105,7 @@ export default function MutasiSectionView() {
 
           {/* Data Table */}
           <DataTable
-            columns={Columns(pagination.pageIndex, pagination.pageSize)}
+            columns={Columns(pagination.pageIndex, pagination.pageSize, bulan, tahun)}
             data={response?.data?.mutasiList ?? []}
             isLoading={isLoading}
             pagination={pagination}

@@ -9,16 +9,16 @@ import * as z from "zod";
 
 const transaksiKeluarSchema = z.object({
   barangId: z.string().min(1, "Barang wajib dipilih"),
-  namaBarang: z.string().optional(), // display only
-  kodeRekening: z.string().optional(), // display only (disabled)
-  kategori: z.string().optional(), // display only (disabled)
-  hargaSatuan: z.number().optional(), // display only (disabled)
-  stok: z.number().optional(), // display only
-  satuanNama: z.string().optional(), // display only
+  namaBarang: z.string().nullable().optional(), // display only
+  kodeRekening: z.string().nullable().optional(), // display only (disabled)
+  kategori: z.string().nullable().optional(), // display only (disabled)
+  hargaSatuan: z.number().nullable().optional(), // display only (disabled)
+  stok: z.number().nullable().optional(), // display only
+  satuanNama: z.string().nullable().optional(), // display only
   volume: z.number().int().min(1, "Volume minimal 1"),
-  tanggal: z.date("Tanggal wajib diisi"),
-  kepada: z.string().trim().optional(),
-  tujuan: z.string().trim().optional(),
+  tanggal: z.date({ message: "Tanggal wajib diisi" }),
+  kepada: z.string().trim().nullable().optional(),
+  tujuan: z.string().trim().nullable().optional(),
 });
 
 const formSchema = z.object({
@@ -59,8 +59,8 @@ export const useAddTransaksiKeluar = () => {
           barangId: data.item.barangId,
           volume: data.item.volume,
           tanggal: data.item.tanggal,
-          kepada: data.item.kepada || undefined,
-          tujuan: data.item.tujuan || undefined,
+          kepada: data.item.kepada || null,
+          tujuan: data.item.tujuan || null,
         },
       },
     });
