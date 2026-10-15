@@ -74,11 +74,19 @@ export async function GET(req: Request) {
           where,
           skip: pageIndex * pageSize,
           take: pageSize,
-          orderBy: {
-            rekening: {
-              kodeRekening: "asc",
+          orderBy: [
+            {
+              rekening: {
+                kodeRekening: "asc",
+              },
             },
-          },
+            {
+              namaBarang: "asc",
+            },
+            {
+              id: "asc",
+            },
+          ],
           select: {
             id: true,
             namaBarang: true,

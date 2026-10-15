@@ -79,7 +79,7 @@ export default function SettingsSection() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
             <div className="space-y-1">
               <h2 className="text-2xl font-bold tracking-tight">Pengaturan</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Kelola data Kode Rekening, Satuan, dan Kategori barang.
               </p>
             </div>

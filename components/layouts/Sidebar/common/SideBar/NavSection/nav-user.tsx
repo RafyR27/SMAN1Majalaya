@@ -99,27 +99,21 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link
-                href={
-                  user?.role === "admin"
-                    ? "/admin/user/profile"
-                    : "/kasir/user/profile"
-                }
-              >
-                <DropdownMenuItem className="flex cursor-pointer hover:bg-muted/50">
+              <Link href={"/user/profile"}>
+                <DropdownMenuItem className="flex cursor-pointer hover:bg-muted/50 py-2">
                   <UserRound />
-                  Account
+                  Akun
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              className="flex cursor-pointer hover:bg-destructive/50"
+              className="flex cursor-pointer hover:bg-destructive/50 py-2"
               onClick={handleLogoutClick}
             >
               <LogOutIcon />
-              Log out
+              Keluar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -8,12 +8,6 @@ import {
 } from "lucide-react";
 
 const SIDEBAR_CONTENT = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-    role: "admin",
-  },
   navMain: [
     {
       title: "Dashboard",

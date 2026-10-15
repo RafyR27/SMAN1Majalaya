@@ -9,6 +9,7 @@ import { DataTable } from "./data-table";
 import { Columns } from "./columns";
 import FilterMutasiDialog from "./FilterMutasi/filter-mutasi-dialog";
 import SelectBulan from "./SelectBulan/select-bulan";
+import UnduhCsvButton from "./UnduhCsvButton";
 import { MutasiApiResponse, MutasiFilter } from "@/types/mutasi";
 
 export default function MutasiSectionView() {
@@ -39,18 +40,11 @@ export default function MutasiSectionView() {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   }, [debouncedSearch, bulan, tahun, filters]);
 
-  // Reset row selection when page, month, or search changes
+  // Reset row selection when month, year, or filter changes
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setRowSelection({});
-  }, [
-    pagination.pageIndex,
-    pagination.pageSize,
-    debouncedSearch,
-    bulan,
-    tahun,
-    filters,
-  ]);
+  }, [bulan, tahun, filters]);
 
   const { data: response, isLoading } = useQuery<MutasiApiResponse>({
     queryKey: [
@@ -102,7 +96,7 @@ export default function MutasiSectionView() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Laporan Mutasi Barang
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Rekapitulasi pergerakan persediaan barang, saldo awal, barang
                 masuk, barang keluar, dan saldo akhir.
               </p>
@@ -128,6 +122,13 @@ export default function MutasiSectionView() {
             searchPlaceholder="Cari nama barang..."
             emptyMessage="Tidak ada data mutasi barang pada periode yang dipilih."
             onUnduhPdf={handleUnduhPdf}
+            unduhCsvSlot={
+              <UnduhCsvButton
+                bulan={bulan}
+                tahun={tahun}
+                disabled={isLoading}
+              />
+            }
             selectBulanSlot={
               <SelectBulan
                 bulan={bulan}

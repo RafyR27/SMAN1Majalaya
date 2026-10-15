@@ -121,8 +121,14 @@ export async function GET(req: Request) {
           orderBy: [
             {
               rekening: {
-                kodeRekening: "asc"
+                kodeRekening: "asc",
               },
+            },
+            {
+              namaBarang: "asc",
+            },
+            {
+              id: "asc",
             },
           ],
 

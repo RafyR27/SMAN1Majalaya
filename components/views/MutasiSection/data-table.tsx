@@ -47,6 +47,7 @@ type DataTableProps<TData extends RowData> = {
 
   selectBulanSlot?: React.ReactNode;
   filterSlot?: React.ReactNode;
+  unduhCsvSlot?: React.ReactNode;
 
   onUnduhPdf?: () => void;
 };
@@ -66,6 +67,7 @@ export function DataTable<TData extends RowData>({
   onRowSelectionChange,
   selectBulanSlot,
   filterSlot,
+  unduhCsvSlot,
   onUnduhPdf,
 }: DataTableProps<TData>) {
   const effectiveRowCount = rowCount > 0 ? rowCount : data.length;
@@ -131,12 +133,12 @@ export function DataTable<TData extends RowData>({
           </div>
         </div>
 
-        {/* Selected rows info + Unduh PDF button */}
-        {selectedCount > 0 && (
+        {/* Selected rows info + Unduh PDF button & Unduh CSV button */}
+        {selectedCount > 0 ? (
           <div className="flex items-center gap-2 shrink-0">
+            {unduhCsvSlot}
             <Button
               onClick={onUnduhPdf}
-              size="sm"
               className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white border-0"
             >
               <FileDown className="h-4 w-4" />
@@ -153,6 +155,12 @@ export function DataTable<TData extends RowData>({
               Batal
             </button>
           </div>
+        ) : (
+          unduhCsvSlot && (
+            <div className="flex items-center gap-2 shrink-0">
+              {unduhCsvSlot}
+            </div>
+          )
         )}
       </div>
 
@@ -227,9 +235,12 @@ export function DataTable<TData extends RowData>({
       {/* Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2">
         <div className="text-sm text-muted-foreground">
-          Menampilkan <span className="font-medium text-foreground">{start}</span>{" "}
-          - <span className="font-medium text-foreground">{end}</span> dari{" "}
-          <span className="font-medium text-foreground">{effectiveRowCount}</span>{" "}
+          Menampilkan{" "}
+          <span className="font-medium text-foreground">{start}</span> -{" "}
+          <span className="font-medium text-foreground">{end}</span> dari{" "}
+          <span className="font-medium text-foreground">
+            {effectiveRowCount}
+          </span>{" "}
           barang
         </div>
 

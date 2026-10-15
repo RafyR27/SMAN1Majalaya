@@ -112,7 +112,7 @@ export default function BarangMasukKeluarSection() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Barang Masuk &amp; Keluar
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Kelola dan pantau riwayat penambahan serta pengurangan stok
                 barang.
               </p>
