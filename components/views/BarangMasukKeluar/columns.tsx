@@ -128,6 +128,19 @@ export const PenambahanColumns = (): LegacyColumnDef<ITransaksiMasuk, unknown>[]
     },
   },
   {
+    id: "oleh",
+    header: () => <div>Diserahkan Oleh</div>,
+    accessorFn: (row) => row.oleh,
+    cell: ({ row }) => {
+      const oleh = row.original.oleh;
+      return (
+        <span className="text-muted-foreground block max-w-40 truncate">
+          {oleh && oleh.trim() !== "" ? oleh : "-"}
+        </span>
+      );
+    },
+  },
+  {
     id: "actions",
     header: () => <div className="text-center">Aksi</div>,
     cell: ({ row }) => (
