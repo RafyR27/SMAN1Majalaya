@@ -86,7 +86,7 @@ export default function BarangSectionView() {
                   render={
                     <Button
                       size="lg"
-                      className="min-w-52 md:min-w-full flex items-center gap-2 cursor-pointer rounded-lg shadow-xs"
+                      className="min-w-52 md:min-w-full flex items-center gap-2"
                     >
                       <span>Tambah Barang</span>
                       <ChevronDown />

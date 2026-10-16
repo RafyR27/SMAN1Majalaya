@@ -21,9 +21,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { Field } from "@/components/ui/field";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 type DataTableProps<TData extends RowData> = {
   columns: LegacyColumnDef<TData>[];
@@ -87,21 +88,31 @@ export function DataTable<TData extends RowData>({
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-4">
         <div className="relative w-full sm:max-w-sm flex gap-2">
-          <Input
-            placeholder={searchPlaceholder}
-            value={searchValue}
-            onChange={(e) => table.setGlobalFilter(e.target.value)}
-            className="py-4.5 rounded-lg"
-          />
-          {searchValue && (
-            <button
-              type="button"
-              className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground cursor-pointer"
-              onClick={() => table.setGlobalFilter("")}
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
+          <Field>
+            <InputGroup className="h-9.5">
+              <InputGroupInput
+                placeholder={searchPlaceholder}
+                value={searchValue}
+                onChange={(e) => table.setGlobalFilter(e.target.value)}
+              />
+              <InputGroupAddon>
+                <Search />
+              </InputGroupAddon>
+              {searchValue && (
+                <InputGroupAddon align="inline-end">
+                  <Button
+                    size={"icon"}
+                    variant={"ghost"}
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => table.setGlobalFilter("")}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+          </Field>
 
           {/* filter */}
           {filterSlot}
