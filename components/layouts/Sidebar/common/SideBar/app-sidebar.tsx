@@ -42,6 +42,7 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
+              size={"lg"}
             >
               <Image
                 src={"/logo.png"}

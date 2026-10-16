@@ -31,11 +31,7 @@ export default function UsersManagementView() {
   }, [debouncedSearch]);
 
   const { data } = useQuery({
-    queryKey: [
-      "admin-users",
-      pagination,
-      debouncedSearch,
-    ],
+    queryKey: ["admin-users", pagination, debouncedSearch],
     queryFn: async () => {
       const response = await instance.get("/admin/user", {
         params: {
@@ -64,7 +60,9 @@ export default function UsersManagementView() {
                 Kelola data akun pengguna.
               </p>
             </div>
-            <AddUserDialog />
+            <div className="flex justify-end">
+              <AddUserDialog />
+            </div>
           </div>
 
           <DataTable
