@@ -54,7 +54,10 @@ const AddUserDialog = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
         render={
-          <Button className="flex gap-3 p-4 cursor-pointer rounded-lg">
+          <Button
+            size={"lg"}
+            className="max-w-50 flex gap-3 p-4 cursor-pointer rounded-lg"
+          >
             <UserPlus />
             Tambah Pengguna
           </Button>

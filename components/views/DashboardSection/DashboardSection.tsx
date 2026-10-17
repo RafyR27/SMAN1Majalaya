@@ -4,25 +4,23 @@ import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import instance from "@/lib/instance";
 import {
-  Boxes,
-  Warehouse,
   ArrowDownToLine,
   ArrowUpFromLine,
   ArrowLeftRight,
   Package,
   FileSpreadsheet,
-  AlertTriangle,
   ArrowRight,
   AlertCircle,
   RefreshCw,
   ChevronLeft,
   ChevronRight,
-  History,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/date-formatted";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FieldGroup, FieldLabel } from "@/components/ui/field";
 
 interface LowStockItem {
   id: string;
@@ -67,7 +65,7 @@ export default function DashboardSection() {
   const [threshold, setThreshold] = useState<number>(5);
   const [restockPage, setRestockPage] = useState<number>(1);
 
-  const { data, isLoading, isError, error, refetch, isFetching } =
+  const { data, isLoading, isError, refetch, isFetching } =
     useQuery<DashboardApiResponse>({
       queryKey: ["dashboard-stats", threshold, restockPage],
       queryFn: async () => {
@@ -87,20 +85,17 @@ export default function DashboardSection() {
   // Penanganan Error State
   if (isError) {
     const errorMessage =
-      (error as { response?: { data?: { message?: string } } })?.response?.data
-        ?.message ||
-      (error as Error)?.message ||
       "Terjadi gangguan koneksi ke server. Pastikan sesi login Anda masih aktif.";
 
     return (
-      <div className="flex flex-1 flex-col p-4 md:p-6 max-w-7xl w-full mx-auto">
-        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 flex flex-col items-center justify-center text-center gap-3">
+      <div className="flex flex-1 flex-col justify-center p-4 md:p-6 max-w-7xl w-full mx-auto">
+        <div className="p-6 flex flex-col items-center justify-center text-center gap-3">
           <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
             <AlertCircle className="h-6 w-6" />
           </div>
           <div className="space-y-1">
             <h3 className="font-semibold text-base text-foreground">
-              Gagal Memuat Statistik Dashboard
+              Gagal Memuat Dashboard
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-md">
               {errorMessage}
@@ -128,58 +123,47 @@ export default function DashboardSection() {
   // 4 Card Metrik Statistik Utama (Warna Dihilangkan - 100% Netral)
   const cards = [
     {
-      title: "TOTAL ITEMS",
+      title: "TOTAL BARANG",
       value: stats?.totalItems ?? 0,
-      icon: Boxes,
     },
     {
-      title: "TOTAL STOCK",
+      title: "TOTAL STOK",
       value: stats?.totalStock ?? 0,
-      icon: Warehouse,
     },
     {
-      title: "STOCK IN",
+      title: "STOK MASUK",
       value: stats?.stockIn ?? 0,
-      icon: ArrowDownToLine,
     },
     {
-      title: "STOCK OUT",
+      title: "STOK KELUAR",
       value: stats?.stockOut ?? 0,
-      icon: ArrowUpFromLine,
     },
   ];
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-6 p-4 md:p-6 max-w-7xl w-full mx-auto">
-        {/* ─── 4 METRIC CARDS (MONOKROM / TANPA WARNA) ─── */}
+        {/* ─── 4 METRIC CARDS ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {cards.map((card, idx) => {
-            const Icon = card.icon;
-
             return (
               <div
                 key={idx}
                 className="bg-card border border-border/80 rounded-lg shadow-xs overflow-hidden flex items-stretch transition-transform hover:-translate-y-0.5"
               >
-
-                <div className="w-20 sm:w-24 bg-muted/60 border-r border-border/70 flex items-center justify-center shrink-0">
-                  <Icon className="size-8 sm:size-9 stroke-[2] text-foreground" />
-                </div>
-
-                <div className="flex-1 py-3 px-4 flex flex-col justify-center">
+                <div className="flex-1 py-3 px-6 flex flex-col justify-center space-y-1.5">
                   {isLoading ? (
-                    <div className="space-y-1.5">
-                      <Skeleton className="h-8 w-16" />
+                    <>
                       <Skeleton className="h-3.5 w-20" />
-                    </div>
+                      <Skeleton className="h-8 w-16" />
+                    </>
                   ) : (
                     <>
-                      <span className="text-2xl sm:text-3xl font-semibold text-foreground leading-none">
-                        {card.value.toLocaleString("id-ID")}
-                      </span>
                       <span className="text-xs text-muted-foreground font-medium mt-1 tracking-wider">
                         {card.title}
+                      </span>
+                      <span className="text-2xl font-semibold text-foreground leading-none max-w-60 truncate">
+                        {card.value.toLocaleString("id-ID")}
                       </span>
                     </>
                   )}
@@ -198,7 +182,9 @@ export default function DashboardSection() {
             >
               <div className="flex items-center gap-2.5">
                 <Package className="h-4 w-4 text-foreground" />
-                <span className="font-medium text-sm text-foreground">Data Barang</span>
+                <span className="font-medium text-sm text-foreground">
+                  Data Barang
+                </span>
               </div>
               <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
@@ -211,7 +197,9 @@ export default function DashboardSection() {
             >
               <div className="flex items-center gap-2.5">
                 <ArrowLeftRight className="h-4 w-4 text-foreground" />
-                <span className="font-medium text-sm text-foreground">Barang Masuk & Keluar</span>
+                <p className="font-medium text-sm text-foreground">
+                  Barang Masuk & Keluar
+                </p>
               </div>
               <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
@@ -224,7 +212,9 @@ export default function DashboardSection() {
             >
               <div className="flex items-center gap-2.5">
                 <FileSpreadsheet className="h-4 w-4 text-foreground" />
-                <span className="font-medium text-sm text-foreground">Mutasi</span>
+                <span className="font-medium text-sm text-foreground">
+                  Mutasi
+                </span>
               </div>
               <ArrowRight className="h-4 w-4 text-foreground" />
             </Button>
@@ -236,38 +226,49 @@ export default function DashboardSection() {
           {/* Kotak 1: Barang Perlu Restock */}
           <div className="border border-border/80 rounded-xl bg-card p-5 space-y-4 shadow-xs flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="size-4 text-foreground" />
+              <div className="flex flex-col md:flex-row md:items-center justify-between pb-2 border-b">
+                <div className="flex items-center gap-2 w-60">
                   <h3 className="font-semibold text-sm text-foreground">
                     Barang Perlu Restock
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <select
-                    aria-label="Filter threshold stok"
-                    value={threshold}
-                    onChange={(e) => {
-                      setThreshold(Number(e.target.value));
+                <FieldGroup className="flex flex-row justify-end items-center gap-3">
+                  <FieldLabel htmlFor="stock-threshold" className="text-xs">
+                    Filter stok
+                  </FieldLabel>
+
+                  <Select
+                    value={String(threshold)}
+                    onValueChange={(value) => {
+                      setThreshold(Number(value));
                       setRestockPage(1);
                     }}
-                    className="h-7 text-xs font-medium rounded-md border border-input bg-background px-2 text-foreground outline-none cursor-pointer hover:bg-muted/50 transition-colors"
                   >
-                    <option value={0}>Stok = 0</option>
-                    <option value={3}>Stok &le; 3</option>
-                    <option value={5}>Stok &le; 5</option>
-                    <option value={10}>Stok &le; 10</option>
-                    <option value={20}>Stok &le; 20</option>
-                  </select>
+                    <SelectTrigger
+                      id="stock-threshold"
+                      className="h-8 w-15 text-xs"
+                      aria-label="Filter threshold stok"
+                    >
+                      <SelectValue placeholder="Pilih stok" />
+                    </SelectTrigger>
+
+                    <SelectContent alignItemWithTrigger={false}>
+                      <SelectItem value="0">Stok = 0</SelectItem>
+                      <SelectItem value="3">Stok ≤ 3</SelectItem>
+                      <SelectItem value="5">Stok ≤ 5</SelectItem>
+                      <SelectItem value="10">Stok ≤ 10</SelectItem>
+                      <SelectItem value="20">Stok ≤ 20</SelectItem>
+                    </SelectContent>
+                  </Select>
 
                   <Link
                     href="/barang"
-                    className="text-xs text-primary hover:underline font-medium shrink-0 ml-1"
+                    className="mb-1 shrink-0 text-xs font-medium text-primary hover:underline"
                   >
                     Lihat Semua
                   </Link>
-                </div>
+                </FieldGroup>
               </div>
 
               {isLoading ? (
@@ -284,31 +285,31 @@ export default function DashboardSection() {
                     return (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 text-xs"
+                        className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 text-sm"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground font-mono text-[11px] w-4">
+                          <span className="text-muted-foreground text-[13px] w-4">
                             {itemNumber}.
                           </span>
                           <div>
                             <p className="font-medium text-foreground">
                               {item.namaBarang}
                             </p>
-                            <span className="text-muted-foreground">
+                            <p className="text-muted-foreground max-w-45 md:max-w-80 line-clamp-2 text-xs">
                               {item.kategori?.kategori ?? "-"}
-                            </span>
+                            </p>
                           </div>
                         </div>
 
                         <span className="font-bold px-2 py-1 rounded-md uppercase tracking-wider text-[11px] bg-muted border border-border text-foreground">
-                          Sisa {item.stok} {item.satuan?.satuan ?? ""}
+                          Sisa {item.stok}
                         </span>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground py-6 text-center">
+                <p className="text-sm text-muted-foreground py-6 text-center">
                   Semua stok barang dalam kondisi aman (&gt; {threshold}).
                 </p>
               )}
@@ -319,8 +320,11 @@ export default function DashboardSection() {
                 <span>
                   Menampilkan{" "}
                   <strong className="text-foreground">
-                    {Math.min((restockPage - 1) * pageSize + 1, pagination.totalItems)} -{" "}
-                    {Math.min(restockPage * pageSize, pagination.totalItems)}
+                    {Math.min(
+                      (restockPage - 1) * pageSize + 1,
+                      pagination.totalItems,
+                    )}{" "}
+                    - {Math.min(restockPage * pageSize, pagination.totalItems)}
                   </strong>{" "}
                   dari{" "}
                   <strong className="text-foreground">
@@ -349,7 +353,7 @@ export default function DashboardSection() {
                     size="sm"
                     onClick={() =>
                       setRestockPage((prev) =>
-                        Math.min(pagination.totalPages, prev + 1)
+                        Math.min(pagination.totalPages, prev + 1),
                       )
                     }
                     disabled={
@@ -368,12 +372,11 @@ export default function DashboardSection() {
           <div className="border border-border/80 rounded-xl bg-card p-5 space-y-4 shadow-xs">
             <div className="flex items-center justify-between pb-2 border-b">
               <div className="flex items-center gap-2">
-                <History className="size-4 text-foreground" />
                 <h3 className="font-semibold text-sm text-foreground">
                   Aktivitas Transaksi Terakhir
                 </h3>
               </div>
- 
+
               <Link
                 href="/barang-masuk-keluar"
                 className="text-xs text-primary hover:underline font-medium"
@@ -390,14 +393,15 @@ export default function DashboardSection() {
               </div>
             ) : (
               <div className="space-y-2">
-                {stats?.recentActivities && stats.recentActivities.length > 0 ? (
+                {stats?.recentActivities &&
+                stats.recentActivities.length > 0 ? (
                   stats.recentActivities.map((act) => {
                     const isMasuk = act.type === "masuk";
 
                     return (
                       <div
                         key={`${act.type}-${act.id}`}
-                        className="flex items-center justify-between p-2.5 rounded-lg border border-border/80 bg-muted/40 text-xs"
+                        className="flex items-center justify-between p-2.5 rounded-lg border border-border/80 bg-muted/40 text-sm"
                       >
                         <div className="flex items-center gap-2.5">
                           <div className="h-7 w-7 rounded-md bg-background flex items-center justify-center shrink-0 border border-border/60">
@@ -418,7 +422,7 @@ export default function DashboardSection() {
                         </div>
 
                         <span
-                          className={`font-bold uppercase ${
+                          className={`font-bold uppercase text-xs ${
                             isMasuk
                               ? "text-emerald-600 dark:text-emerald-400"
                               : "text-rose-600 dark:text-rose-400"
@@ -431,7 +435,7 @@ export default function DashboardSection() {
                     );
                   })
                 ) : (
-                  <p className="text-xs text-muted-foreground py-6 text-center">
+                  <p className="text-sm text-muted-foreground py-6 text-center">
                     Belum ada riwayat transaksi.
                   </p>
                 )}

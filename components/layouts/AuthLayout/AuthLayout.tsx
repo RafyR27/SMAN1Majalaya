@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <div className="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2">
       <div className="relative hidden overflow-hidden lg:block">
         <Image
-          src="/gedung-sekolah.jpg"
+          src="/gedung-sekolah-new.jpeg"
           alt="Gedung SMAN 1 Majalaya"
           fill
           priority
@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Header Pojok Kiri Atas (Logo + Nama Sekolah) */}
         <div className="flex items-center gap-3">
           <Image
-            src="/logo-sekolah.jpg"
+            src="/logo.png"
             alt="Logo SMAN 1 Majalaya"
             width={44}
             height={44}
