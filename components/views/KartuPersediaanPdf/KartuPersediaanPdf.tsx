@@ -103,6 +103,7 @@ export default function KartuPersediaanPdfView() {
 
   const handlePrint = () => {
     if (typeof window !== "undefined") {
+      document.title = namaFile;
       window.print();
     }
   };
@@ -254,8 +255,8 @@ export default function KartuPersediaanPdfView() {
 
             {/* TABEL IDENTITAS BARANG (Di Atas Tabel Mutasi) */}
             <div className="mb-4 break-inside-avoid">
-              <div className="border border-black bg-gray-50 text-[9px]">
-                <div className="bg-gray-800 text-white font-bold py-1 px-2 uppercase text-[8.5px] border-b border-black">
+              <div className="border border-black text-[9px]">
+                <div className=" text-black font-bold py-1 px-2 uppercase text-[8.5px] border-b border-black">
                   Identitas Barang
                 </div>
                 <div className="grid grid-cols-2 divide-x divide-black">
@@ -328,7 +329,7 @@ export default function KartuPersediaanPdfView() {
                 </colgroup>
 
                 <thead>
-                  <tr className="bg-gray-800 text-white font-bold text-center">
+                  <tr className="text-black font-bold text-center">
                     <th
                       rowSpan={2}
                       className="border border-black py-1.5 px-0.5 uppercase text-center"
@@ -379,7 +380,7 @@ export default function KartuPersediaanPdfView() {
                       Keperluan
                     </th>
                   </tr>
-                  <tr className="bg-gray-800 text-white font-bold text-center">
+                  <tr className="text-black font-bold text-center">
                     {/* Subkolom Masuk */}
                     <th
                       className="border border-black py-1 px-0.5 uppercase text-center"
@@ -452,23 +453,23 @@ export default function KartuPersediaanPdfView() {
                       01/{String(bulan).padStart(2, "0")}/{tahun}
                     </td>
                     {/* Masuk (Jumlah, Harga Satuan, Total) */}
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
                     {/* Keluar (Jumlah, Harga Satuan, Total) */}
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-right text-gray-400">
                       —
                     </td>
                     {/* Sisa Saldo Barang Tersedia (Jumlah, Harga Satuan, Total) */}
