@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import instance from "@/lib/instance";
 import { IKartuPersediaanResponse } from "@/types/transaksi";
-import { formatDate } from "@/lib/date-formatted";
 import { formatRupiah } from "@/lib/rupiah-foramatted";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { ArrowLeft, Printer, AlertTriangle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import Image from "next/image";
 
 const BULAN_NAMA = [
   "Januari",
@@ -71,6 +71,26 @@ export default function KartuPersediaanPdfView() {
   const saldoAkhir = kartuData?.saldoAkhir ?? 0;
   const validasi = kartuData?.validasi;
 
+  const { totalMasukRp, totalKeluarRp } = useMemo(() => {
+    let masuk = 0;
+    let keluar = 0;
+    for (const t of transaksi) {
+      const val = t.total || t.jumlah * t.hargaSatuan;
+      if (t.tipe === "MASUK") masuk += val;
+      else if (t.tipe === "KELUAR") keluar += val;
+    }
+    return { totalMasukRp: masuk, totalKeluarRp: keluar };
+  }, [transaksi]);
+
+  const formatTanggalSingkat = (tgl: string | Date) => {
+    try {
+      const d = new Date(tgl);
+      return Number.isNaN(d.getTime()) ? "—" : format(d, "dd/MM/yyyy");
+    } catch {
+      return "—";
+    }
+  };
+
   const namaFile = `Kartu Persediaan - ${barang?.namaBarang ?? "Barang"} - ${periodeLabel}`;
 
   useEffect(() => {
@@ -82,8 +102,9 @@ export default function KartuPersediaanPdfView() {
   }, [namaFile]);
 
   const handlePrint = () => {
-    document.title = namaFile;
-    window.print();
+    if (typeof window !== "undefined") {
+      window.print();
+    }
   };
 
   return (
@@ -144,9 +165,7 @@ export default function KartuPersediaanPdfView() {
         </div>
       )}
 
-      {/* ====================================================
-          DOKUMEN PDF — Area yang akan dicetak
-      ==================================================== */}
+      {/* DOKUMEN PDF — Area yang akan dicetak */}
       {!isLoading && barang && (
         <div
           id="pdf-wrapper"
@@ -159,67 +178,65 @@ export default function KartuPersediaanPdfView() {
               bg-white text-black
               mx-auto
               w-[210mm] min-h-[297mm]
-              px-[12mm] py-[10mm]
+              px-[10mm] py-[8mm]
               shadow-md border border-gray-200
               print:w-full print:p-0
               print:shadow-none print:border-0
               font-[Arial,Helvetica,sans-serif]
             "
           >
-            {/* ──────────────────────────────────────────────
-              KOP SURAT RESMI SEKOLAH
-            ────────────────────────────────────────────── */}
+            {/* KOP SURAT RESMI SEKOLAH */}
             <div className="flex items-center gap-3 mb-1">
-              {/* Logo Kiri */}
-              <div
-                className="shrink-0 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center"
-                style={{ fontSize: 9, textAlign: "center", lineHeight: "1.2" }}
-              >
-                <span className="font-bold text-[8px] leading-tight text-center px-1">
-                  LOGO
-                  <br />
-                  DINAS
-                </span>
+              {/* Logo Pemprov Jabar */}
+              <div className="shrink-0">
+                <Image
+                  src="/logo_gemah_ripah.webp"
+                  alt="Logo Gemah Ripah"
+                  width={70}
+                  height={74}
+                  priority
+                  style={{ height: "auto" }}
+                  className="rounded-lg"
+                />
               </div>
 
               {/* Teks Kop */}
-              <div className="flex-1 text-center">
-                <p className="text-[11px] font-normal tracking-wide">
+              <div className="flex-1 text-center leading-tight">
+                <p className="text-[15px] font-bold tracking-wide">
                   PEMERINTAH DAERAH PROVINSI JAWA BARAT
                 </p>
-                <p className="text-[11px] font-normal tracking-wide">
+                <p className="text-[15px] font-bold tracking-wide">
                   DINAS PENDIDIKAN
                 </p>
-                <p className="text-[15px] font-bold tracking-wide uppercase">
-                  SMA NEGERI 1 MAJALAYA
+                <p className="text-[15px] font-bold tracking-wide">
+                  CABANG DINAS PENDIDIKAN WILAYAH IV
                 </p>
-                <p className="text-[10px] font-normal">
-                  Perum Citra Kebun Mas , Kec. Majalaya, Kab. Karawang, Prov. Jawa Barat
+                <p className="text-[18px] font-bold tracking-wide uppercase">
+                  SEKOLAH MENENGAH ATAS NEGERI 1 MAJALAYA
                 </p>
-                <p className="text-[10px] font-normal">
-                  Telepon: (022) 5951089 &nbsp;|&nbsp; Email: sman1majalaya@gmail.com
-                </p>
+                <div className="mt-2">
+                  <p className="text-[10px] font-normal">
+                    Perum Citra Kebun Mas Desa Bengle Kecamatan Majalaya
+                    Kabupaten Karawang 41355
+                  </p>
+                  <p className="text-[10px] font-normal">
+                    Web: https://sman1majalayakrw.sch.id E-mail:
+                    smansatumajalaya.karawang@gmail.com
+                  </p>
+                  <p className="text-[10px] font-normal">
+                    No.Telepon : ( 0267 ) 8402699
+                  </p>
+                </div>
               </div>
 
-              {/* Logo Kanan */}
-              <div
-                className="shrink-0 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center"
-                style={{ fontSize: 9, textAlign: "center", lineHeight: "1.2" }}
-              >
-                <span className="font-bold text-[8px] leading-tight text-center px-1">
-                  LOGO
-                  <br />
-                  JABAR
-                </span>
-              </div>
+              {/* Kanan — spacer penyeimbang logo kiri */}
+              <div className="shrink-0 w-[70px]"></div>
             </div>
 
-            {/* Garis Ganda Kop */}
-            <div className="border-t-2 border-black mt-2 mb-4" />
+            {/* Garis KOP */}
+            <div className="border-t border-black mt-2 mb-5" />
 
-            {/* ──────────────────────────────────────────────
-              JUDUL & SUB-INFO
-            ────────────────────────────────────────────── */}
+            {/* JUDUL & SUB-INFO */}
             <div className="text-center mb-4">
               <h1 className="text-[14px] font-bold uppercase tracking-widest">
                 KARTU PERSEDIAAN BARANG HABIS PAKAI
@@ -235,9 +252,7 @@ export default function KartuPersediaanPdfView() {
               </div>
             </div>
 
-            {/* ──────────────────────────────────────────────
-              TABEL IDENTITAS BARANG (Di Atas Tabel Mutasi)
-            ────────────────────────────────────────────── */}
+            {/* TABEL IDENTITAS BARANG (Di Atas Tabel Mutasi) */}
             <div className="mb-4 break-inside-avoid">
               <div className="border border-black bg-gray-50 text-[9px]">
                 <div className="bg-gray-800 text-white font-bold py-1 px-2 uppercase text-[8.5px] border-b border-black">
@@ -251,13 +266,13 @@ export default function KartuPersediaanPdfView() {
                       <span className="font-bold text-black">: {barang.namaBarang}</span>
                     </div>
                     <div className="flex">
-                      <span className="w-28 text-gray-600 font-normal">Satuan</span>
+                      <span className="w-28 text-gray-600 font-normal">Satuan Barang</span>
                       <span className="font-semibold text-black">: {barang.satuan}</span>
                     </div>
                     <div className="flex">
-                      <span className="w-28 text-gray-600 font-normal">Merek</span>
+                      <span className="w-28 text-gray-600 font-normal">Sumber Dana</span>
                       <span className="font-semibold text-black">
-                        : {barang.merk && barang.merk.trim() !== "" ? barang.merk : "—"}
+                        : {barang.sumber?.trim() || "—"}
                       </span>
                     </div>
                   </div>
@@ -275,9 +290,9 @@ export default function KartuPersediaanPdfView() {
                       <span className="font-semibold text-black">: {barang.kategori}</span>
                     </div>
                     <div className="flex">
-                      <span className="w-28 text-gray-600 font-normal">Harga Referensi</span>
-                      <span className="font-medium text-black">
-                        : {formatRupiah(barang.harga)}
+                      <span className="w-28 text-gray-600 font-normal">Merek</span>
+                      <span className="font-semibold text-black">
+                        : {barang.merk?.trim() || "—"}
                       </span>
                     </div>
                   </div>
@@ -285,46 +300,144 @@ export default function KartuPersediaanPdfView() {
               </div>
             </div>
 
-            {/* ──────────────────────────────────────────────
-              TABEL MUTASI & TRANSAKSI KRONOLOGIS
-            ────────────────────────────────────────────── */}
+            {/* TABEL MUTASI & TRANSAKSI KRONOLOGIS */}
             <div className="mb-4">
               <table
-                className="w-full border-collapse text-[8.5px]"
+                className="w-full border-collapse text-[7.5px]"
                 style={{ tableLayout: "fixed" }}
               >
                 <colgroup>
+                  <col style={{ width: "3%" }} />
+                  <col style={{ width: "7.5%" }} />
+                  {/* Masuk */}
                   <col style={{ width: "5%" }} />
-                  <col style={{ width: "14%" }} />
-                  <col style={{ width: "23%" }} />
-                  <col style={{ width: "24%" }} />
+                  <col style={{ width: "8%" }} />
+                  <col style={{ width: "9%" }} />
+                  {/* Keluar */}
+                  <col style={{ width: "5%" }} />
+                  <col style={{ width: "8%" }} />
+                  <col style={{ width: "9%" }} />
+                  {/* Sisa Saldo Barang Tersedia */}
+                  <col style={{ width: "5%" }} />
+                  <col style={{ width: "8%" }} />
+                  <col style={{ width: "9%" }} />
+                  {/* Oleh */}
                   <col style={{ width: "11%" }} />
-                  <col style={{ width: "11%" }} />
-                  <col style={{ width: "12%" }} />
+                  {/* Keperluan */}
+                  <col style={{ width: "12.5%" }} />
                 </colgroup>
 
                 <thead>
                   <tr className="bg-gray-800 text-white font-bold text-center">
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
+                    <th
+                      rowSpan={2}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
                       No
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
+                    <th
+                      rowSpan={2}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
                       Tanggal
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
-                      Pihak Terkait (Oleh / Kepada)
+                    <th
+                      colSpan={3}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
+                      Masuk
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
-                      Keterangan / Keperluan
+                    <th
+                      colSpan={3}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
+                      Keluar
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
-                      Masuk ({barang.satuan})
+                    <th
+                      colSpan={3}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
+                      Sisa Saldo Barang Tersedia
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
-                      Keluar ({barang.satuan})
+                    <th
+                      rowSpan={2}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
+                      Oleh
                     </th>
-                    <th className="border border-black py-1.5 px-1 uppercase text-center">
-                      Sisa ({barang.satuan})
+                    <th
+                      rowSpan={2}
+                      className="border border-black py-1.5 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7.5 }}
+                    >
+                      Keperluan
+                    </th>
+                  </tr>
+                  <tr className="bg-gray-800 text-white font-bold text-center">
+                    {/* Subkolom Masuk */}
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Jumlah
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Harga Satuan
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Total (Rp)
+                    </th>
+
+                    {/* Subkolom Keluar */}
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Jumlah
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Harga Satuan
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Total (Rp)
+                    </th>
+
+                    {/* Subkolom Sisa Saldo Barang Tersedia */}
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Jumlah
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Harga Satuan
+                    </th>
+                    <th
+                      className="border border-black py-1 px-0.5 uppercase text-center"
+                      style={{ fontSize: 7 }}
+                    >
+                      Total (Rp)
                     </th>
                   </tr>
                 </thead>
@@ -332,30 +445,57 @@ export default function KartuPersediaanPdfView() {
                 <tbody>
                   {/* Baris Saldo Awal */}
                   <tr className="bg-gray-100 font-medium">
-                    <td className="border border-black text-center py-1.5 px-1 text-gray-500">
+                    <td className="border border-black text-center py-1.5 px-0.5 text-gray-500">
                       —
                     </td>
-                    <td className="border border-black text-center py-1.5 px-1 font-mono text-[8px]">
+                    <td className="border border-black text-center py-1.5 px-0.5 font-mono text-[7.5px]">
                       01/{String(bulan).padStart(2, "0")}/{tahun}
                     </td>
-                    <td className="border border-black py-1.5 px-1.5 text-center text-gray-500">
+                    {/* Masuk (Jumlah, Harga Satuan, Total) */}
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-1.5 font-bold uppercase text-gray-700">
-                      SALDO AWAL PERIODE
-                    </td>
-                    <td className="border border-black py-1.5 px-1 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
                       —
                     </td>
-                    <td className="border border-black py-1.5 px-1 text-center text-gray-400">
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
                       —
                     </td>
+                    {/* Keluar (Jumlah, Harga Satuan, Total) */}
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    {/* Sisa Saldo Barang Tersedia (Jumlah, Harga Satuan, Total) */}
                     <td
-                      className={`border border-black py-1.5 px-1.5 text-right font-bold tabular-nums ${
+                      className={`border border-black py-1.5 px-0.5 text-right font-bold tabular-nums ${
                         saldoAwal < 0 ? "text-red-600" : "text-black"
                       }`}
                     >
                       {saldoAwal.toLocaleString("id-ID")}
+                    </td>
+                    <td className="border border-black py-1.5 px-0.5 text-right tabular-nums text-[6.5px]">
+                      {formatRupiah(barang.harga)}
+                    </td>
+                    <td
+                      className={`border border-black py-1.5 px-0.5 text-right font-bold tabular-nums text-[6.5px] ${
+                        saldoAwal < 0 ? "text-red-600" : "text-black"
+                      }`}
+                    >
+                      {formatRupiah(saldoAwal * barang.harga)}
+                    </td>
+                    {/* Oleh */}
+                    <td className="border border-black py-1.5 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    {/* Keperluan */}
+                    <td className="border border-black py-1.5 px-1 text-left italic text-[7px] text-gray-700">
+                      Saldo Awal Periode
                     </td>
                   </tr>
 
@@ -363,96 +503,188 @@ export default function KartuPersediaanPdfView() {
                   {transaksi.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={7}
+                        colSpan={13}
                         className="border border-black text-center py-6 text-gray-500 italic text-[9px]"
                       >
                         — Tidak ada transaksi mutasi barang pada periode {periodeLabel} —
                       </td>
                     </tr>
                   ) : (
-                    transaksi.map((item, idx) => (
-                      <tr
-                        key={item.id}
-                        className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                      >
-                        <td className="border border-black text-center py-1.5 px-1">
-                          {idx + 1}
-                        </td>
-                        <td className="border border-black text-center py-1.5 px-1 whitespace-nowrap">
-                          {formatDate(item.tanggal)}
-                        </td>
-                        <td className="border border-black py-1.5 px-1.5 break-words">
-                          {item.pihakTerkait && item.pihakTerkait.trim() !== "" ? (
-                            <span>{item.pihakTerkait}</span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="border border-black py-1.5 px-1.5 break-words">
-                          {item.keterangan && item.keterangan.trim() !== "" ? (
-                            <span>{item.keterangan}</span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="border border-black py-1.5 px-1.5 text-right tabular-nums">
-                          {item.tipe === "MASUK" ? (
-                            <span className="font-semibold text-emerald-700">
-                              +{item.jumlah.toLocaleString("id-ID")}
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="border border-black py-1.5 px-1.5 text-right tabular-nums">
-                          {item.tipe === "KELUAR" ? (
-                            <span className="font-semibold text-rose-700">
-                              {item.jumlah.toLocaleString("id-ID")}
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td
-                          className={`border border-black py-1.5 px-1.5 text-right font-bold tabular-nums ${
-                            item.saldoBerjalan < 0 ? "text-red-600" : "text-black"
-                          }`}
+                    transaksi.map((item, idx) => {
+                      const isMasuk = item.tipe === "MASUK";
+                      const isKeluar = item.tipe === "KELUAR";
+                      const itemHarga = item.hargaSatuan || barang.harga;
+                      const itemTotal = item.total || item.jumlah * itemHarga;
+                      const sisaTotalRp = item.saldoBerjalan * itemHarga;
+
+                      return (
+                        <tr
+                          key={item.id}
+                          className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                         >
-                          {item.saldoBerjalan.toLocaleString("id-ID")}
-                        </td>
-                      </tr>
-                    ))
+                          <td className="border border-black text-center py-1.5 px-0.5">
+                            {idx + 1}
+                          </td>
+                          <td className="border border-black text-center py-1.5 px-0.5 whitespace-nowrap font-mono text-[7.5px]">
+                            {formatTanggalSingkat(item.tanggal)}
+                          </td>
+                          {/* Masuk: Jumlah, Harga Satuan, Total */}
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums">
+                            {isMasuk ? (
+                              <span className="font-semibold text-emerald-700">
+                                {item.jumlah.toLocaleString("id-ID")}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums text-[6.5px]">
+                            {isMasuk ? (
+                              formatRupiah(itemHarga)
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums font-medium text-[6.5px]">
+                            {isMasuk ? (
+                              <span className="text-emerald-700">
+                                {formatRupiah(itemTotal)}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          {/* Keluar: Jumlah, Harga Satuan, Total */}
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums">
+                            {isKeluar ? (
+                              <span className="font-semibold text-rose-700">
+                                {item.jumlah.toLocaleString("id-ID")}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums text-[6.5px]">
+                            {isKeluar ? (
+                              formatRupiah(itemHarga)
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums font-medium text-[6.5px]">
+                            {isKeluar ? (
+                              <span className="text-rose-700">
+                                {formatRupiah(itemTotal)}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          {/* Sisa Saldo Barang Tersedia: Jumlah, Harga Satuan, Total */}
+                          <td
+                            className={`border border-black py-1.5 px-0.5 text-right font-bold tabular-nums ${
+                              item.saldoBerjalan < 0
+                                ? "text-red-600"
+                                : "text-black"
+                            }`}
+                          >
+                            {item.saldoBerjalan.toLocaleString("id-ID")}
+                          </td>
+                          <td className="border border-black py-1.5 px-0.5 text-right tabular-nums text-[6.5px]">
+                            {formatRupiah(itemHarga)}
+                          </td>
+                          <td
+                            className={`border border-black py-1.5 px-0.5 text-right font-bold tabular-nums text-[6.5px] ${
+                              item.saldoBerjalan < 0
+                                ? "text-red-600"
+                                : "text-black"
+                            }`}
+                          >
+                            {formatRupiah(sisaTotalRp)}
+                          </td>
+                          {/* Oleh */}
+                          <td className="border border-black py-1.5 px-1 text-left break-words text-[7px]">
+                            {item.pihakTerkait?.trim() || (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                          {/* Keperluan */}
+                          <td className="border border-black py-1.5 px-1 text-left break-words text-[7px]">
+                            {item.keterangan?.trim() || (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
 
                   {/* Baris Total Mutasi & Saldo Akhir */}
                   <tr className="bg-gray-200 font-bold">
                     <td
-                      colSpan={4}
-                      className="border border-black py-2 px-2 uppercase text-center text-[9px]"
+                      colSpan={2}
+                      className="border border-black py-2 px-1 uppercase text-center text-[7.5px]"
                     >
                       TOTAL MUTASI &amp; SALDO AKHIR
                     </td>
-                    <td className="border border-black py-2 px-1.5 text-right tabular-nums text-emerald-800">
-                      {totalMasuk > 0 ? `+${totalMasuk.toLocaleString("id-ID")}` : "0"}
+                    {/* Total Masuk */}
+                    <td className="border border-black py-2 px-0.5 text-right tabular-nums text-emerald-800">
+                      {totalMasuk > 0
+                        ? totalMasuk.toLocaleString("id-ID")
+                        : "0"}
                     </td>
-                    <td className="border border-black py-2 px-1.5 text-right tabular-nums text-rose-800">
-                      {totalKeluar > 0 ? totalKeluar.toLocaleString("id-ID") : "0"}
+                    <td className="border border-black py-2 px-0.5 text-center text-gray-400">
+                      —
                     </td>
+                    <td className="border border-black py-2 px-0.5 text-right tabular-nums text-emerald-800 text-[6.5px]">
+                      {totalMasukRp > 0 ? formatRupiah(totalMasukRp) : "Rp 0"}
+                    </td>
+                    {/* Total Keluar */}
+                    <td className="border border-black py-2 px-0.5 text-right tabular-nums text-rose-800">
+                      {totalKeluar > 0
+                        ? totalKeluar.toLocaleString("id-ID")
+                        : "0"}
+                    </td>
+                    <td className="border border-black py-2 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    <td className="border border-black py-2 px-0.5 text-right tabular-nums text-rose-800 text-[6.5px]">
+                      {totalKeluarRp > 0 ? formatRupiah(totalKeluarRp) : "Rp 0"}
+                    </td>
+                    {/* Saldo Akhir */}
                     <td
-                      className={`border border-black py-2 px-1.5 text-right tabular-nums text-[9px] ${
+                      className={`border border-black py-2 px-0.5 text-right tabular-nums font-bold ${
                         saldoAkhir < 0 ? "text-red-700" : "text-black"
                       }`}
                     >
                       {saldoAkhir.toLocaleString("id-ID")}
+                    </td>
+                    <td className="border border-black py-2 px-0.5 text-right tabular-nums font-bold text-[6.5px]">
+                      {formatRupiah(barang.harga)}
+                    </td>
+                    <td
+                      className={`border border-black py-2 px-0.5 text-right tabular-nums font-bold text-[6.5px] ${
+                        saldoAkhir < 0 ? "text-red-700" : "text-black"
+                      }`}
+                    >
+                      {formatRupiah(saldoAkhir * barang.harga)}
+                    </td>
+                    {/* Oleh */}
+                    <td className="border border-black py-2 px-0.5 text-center text-gray-400">
+                      —
+                    </td>
+                    {/* Keperluan */}
+                    <td className="border border-black py-2 px-0.5 text-center text-gray-400">
+                      —
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            {/* ──────────────────────────────────────────────
+            {/*
               PERINGATAN & TRANSPARANSI AUDIT (Jika ada)
-            ────────────────────────────────────────────── */}
+             */}
             {validasi && (!validasi.isConsistent || validasi.warnings.length > 0) && (
               <div className="mb-4 border border-amber-300 bg-amber-50/60 p-2 text-[8px] text-amber-900 rounded-none break-inside-avoid">
                 <div className="flex items-center gap-1 font-bold text-[8.5px] mb-0.5">
@@ -467,9 +699,9 @@ export default function KartuPersediaanPdfView() {
               </div>
             )}
 
-            {/* ──────────────────────────────────────────────
+            {/*
               BLOK TANDA TANGAN
-            ────────────────────────────────────────────── */}
+            */}
             <div
               className="mt-auto pt-6 flex justify-between break-inside-avoid"
               style={{ pageBreakInside: "avoid" }}
@@ -499,22 +731,26 @@ export default function KartuPersediaanPdfView() {
         </div>
       )}
 
-      {/* ====================================================
+      {/*
           PRINT STYLES — inlined via style tag
-      ==================================================== */}
+      */}
       <style>{`
         @media print {
           @page {
             size: A4 portrait;
-            margin: 1.8cm;
+            margin: 1.2cm;
           }
 
           html,
           body {
-            width: 100%;
+            display: block !important;
+            height: auto !important;
+            min-height: auto !important;
+            width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background: white !important;
+            overflow: visible !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -536,7 +772,7 @@ export default function KartuPersediaanPdfView() {
             box-shadow: none !important;
             width: 100% !important;
             max-width: 100% !important;
-            min-height: 258mm !important;
+            min-height: 268mm !important;
           }
 
           #pdf-document thead {
