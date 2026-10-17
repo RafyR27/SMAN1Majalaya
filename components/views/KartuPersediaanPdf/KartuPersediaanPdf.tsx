@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import instance from "@/lib/instance";
@@ -71,13 +71,16 @@ export default function KartuPersediaanPdfView() {
   const saldoAkhir = kartuData?.saldoAkhir ?? 0;
   const validasi = kartuData?.validasi;
 
-  const totalMasukRp = transaksi
-    .filter((t) => t.tipe === "MASUK")
-    .reduce((acc, t) => acc + (t.total || t.jumlah * t.hargaSatuan), 0);
-
-  const totalKeluarRp = transaksi
-    .filter((t) => t.tipe === "KELUAR")
-    .reduce((acc, t) => acc + (t.total || t.jumlah * t.hargaSatuan), 0);
+  const { totalMasukRp, totalKeluarRp } = useMemo(() => {
+    let masuk = 0;
+    let keluar = 0;
+    for (const t of transaksi) {
+      const val = t.total || t.jumlah * t.hargaSatuan;
+      if (t.tipe === "MASUK") masuk += val;
+      else if (t.tipe === "KELUAR") keluar += val;
+    }
+    return { totalMasukRp: masuk, totalKeluarRp: keluar };
+  }, [transaksi]);
 
   const formatTanggalSingkat = (tgl: string | Date) => {
     try {
