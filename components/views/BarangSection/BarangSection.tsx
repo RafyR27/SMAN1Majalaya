@@ -16,7 +16,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, FileSpreadsheet, Plus } from "lucide-react";
+import {
+  AlertCircle,
+  RefreshCw, 
+  ChevronDown, 
+  FileSpreadsheet, 
+  Plus 
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import instance from "@/lib/instance";
 import { BarangFilter } from "@/types/barang";
@@ -45,7 +51,7 @@ export default function BarangSectionView() {
   }, [debouncedSearch]);
 
   // Filter dummy data by namaBarang
-  const { data: items, isLoading } = useQuery({
+  const { data: items, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["items-barang", pagination, debouncedSearch, filters],
     queryFn: async () => {
       const response = await instance.get("/barang", {
@@ -87,6 +93,7 @@ export default function BarangSectionView() {
                     <Button
                       size="lg"
                       className="min-w-52 md:min-w-full flex items-center gap-2"
+                      disabled={isError}
                     >
                       <span>Tambah Barang</span>
                       <ChevronDown />
@@ -149,38 +156,62 @@ export default function BarangSectionView() {
           </div>
 
           {/* Data Table */}
-          <DataTable
-            columns={Columns(pagination.pageIndex, pagination.pageSize, {
-              rekeningList: items?.data?.rekeningList ?? [],
-              kategoriList: items?.data?.kategoriList ?? [],
-              satuanList: items?.data?.satuanList ?? [],
-            })}
-            data={items?.data?.barangList ?? []}
-            isLoading={isLoading}
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            rowCount={items?.pagination?.totalBarang ?? items?.data?.barangList?.length ?? 0}
-            globalFilter={search}
-            onGlobalFilterChange={setSearch}
-            searchPlaceholder="Cari nama barang..."
-            emptyMessage="Tidak ada data barang yang ditemukan."
-            filterSlot={
-              <FilterBarangDialog
-                rekeningList={items?.data?.rekeningList ?? []}
-                kategoriList={items?.data?.kategoriList ?? []}
-                currentFilters={filters}
-                onApplyFilters={(newFilters) => {
-                  setFilters(newFilters);
-                  setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-                }}
-                onResetFilters={() => {
-                  setFilters({});
-                  setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-                }}
-                isLoading={isLoading}
-              />
-            }
-          />
+          {isError ? (
+            <div className="border border-border/80 rounded-xl bg-card p-8 flex flex-col items-center justify-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+                <AlertCircle className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-semibold text-base">Gagal Memuat Data Barang</h3>
+                <p className="text-sm text-muted-foreground max-w-md">
+                  Terjadi gangguan koneksi ke server. Pastikan sesi login Anda masih aktif.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                disabled={isFetching}
+                className="mt-2 gap-2 cursor-pointer"
+              >
+                <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+                <span>{isFetching ? "Mencoba lagi..." : "Coba Lagi"}</span>
+              </Button>
+            </div>
+          ) : (
+            <DataTable
+              columns={Columns(pagination.pageIndex, pagination.pageSize, {
+                rekeningList: items?.data?.rekeningList ?? [],
+                kategoriList: items?.data?.kategoriList ?? [],
+                satuanList: items?.data?.satuanList ?? [],
+              })}
+              data={items?.data?.barangList ?? []}
+              isLoading={isLoading}
+              pagination={pagination}
+              onPaginationChange={setPagination}
+              rowCount={items?.pagination?.totalBarang ?? items?.data?.barangList?.length ?? 0}
+              globalFilter={search}
+              onGlobalFilterChange={setSearch}
+              searchPlaceholder="Cari nama barang..."
+              emptyMessage="Tidak ada data barang yang ditemukan."
+              filterSlot={
+                <FilterBarangDialog
+                  rekeningList={items?.data?.rekeningList ?? []}
+                  kategoriList={items?.data?.kategoriList ?? []}
+                  currentFilters={filters}
+                  onApplyFilters={(newFilters) => {
+                    setFilters(newFilters);
+                    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                  }}
+                  onResetFilters={() => {
+                    setFilters({});
+                    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                  }}
+                  isLoading={isLoading}
+                />
+              }
+            />
+          )}
         </div>
       </div>
     </div>
