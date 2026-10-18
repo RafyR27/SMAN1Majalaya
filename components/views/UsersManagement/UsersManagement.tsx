@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import instance from "@/lib/instance";
 import { PaginationState } from "@tanstack/react-table";
 import { Columns } from "./columns";
+import { AlertCircle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function UsersManagementView() {
   const [search, setSearch] = useState("");
@@ -30,7 +32,7 @@ export default function UsersManagementView() {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   }, [debouncedSearch]);
 
-  const { data } = useQuery({
+  const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["admin-users", pagination, debouncedSearch],
     queryFn: async () => {
       const response = await instance.get("/admin/user", {
@@ -44,6 +46,7 @@ export default function UsersManagementView() {
       return response.data;
     },
     placeholderData: keepPreviousData,
+    retry: 1,
   });
 
   return (
@@ -65,15 +68,41 @@ export default function UsersManagementView() {
             </div>
           </div>
 
-          <DataTable
-            columns={Columns}
-            data={data?.data ?? []}
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            rowCount={data?.pagination.totalUsers ?? 0}
-            globalFilter={search}
-            onGlobalFilterChange={setSearch}
-          />
+          {isError ? (
+            <div className="border border-border/80 rounded-xl bg-card p-8 flex flex-col items-center justify-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+                <AlertCircle className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-semibold text-base">
+                  Gagal Memuat Data Pengguna
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-md">
+                  Terjadi gangguan koneksi ke server. Pastikan sesi login Anda masih aktif.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                disabled={isFetching}
+                className="mt-2 gap-2 cursor-pointer"
+              >
+                <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+                <span>{isFetching ? "Mencoba lagi..." : "Coba Lagi"}</span>
+              </Button>
+            </div>
+          ) : (
+            <DataTable
+              columns={Columns}
+              data={data?.data ?? []}
+              pagination={pagination}
+              onPaginationChange={setPagination}
+              rowCount={data?.pagination.totalUsers ?? 0}
+              globalFilter={search}
+              onGlobalFilterChange={setSearch}
+            />
+          )}
         </div>
       </div>
     </div>
