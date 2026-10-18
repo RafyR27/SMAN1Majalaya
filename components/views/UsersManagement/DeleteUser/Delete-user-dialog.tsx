@@ -37,7 +37,7 @@ const DeleteUserDialog = ({
   const deleteUserService = async (id: string) => {
     await instance.delete(`/admin/user?id=${id}`, {
       data: {
-        name,
+        name: name.trim(),
       },
     });
   };
@@ -118,8 +118,7 @@ const DeleteUserDialog = ({
             variant="destructive"
             onClick={handleDeleteUser}
             disabled={
-              name.toLocaleLowerCase() !== user?.name?.toLowerCase() ||
-              isPendingDelete
+              name.trim() !== user?.name?.trim() || isPendingDelete
             }
           >
             {isPendingDelete ? <Spinner /> : "Hapus Pengguna"}

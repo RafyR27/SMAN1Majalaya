@@ -37,7 +37,7 @@ const DeleteBarangDialog = ({
   const deleteBarangService = async (id: string) => {
     await instance.delete(`/barang?id=${id}`, {
       data: {
-        namaBarang: namaBarangInput,
+        namaBarang: namaBarangInput.trim(),
       },
     });
   };
@@ -121,8 +121,7 @@ const DeleteBarangDialog = ({
             variant="destructive"
             onClick={handleDeleteBarang}
             disabled={
-              namaBarangInput.trim().toLowerCase() !==
-                barang?.namaBarang?.trim().toLowerCase() || isPendingDelete
+              namaBarangInput.trim() !== barang?.namaBarang?.trim() || isPendingDelete
             }
           >
             {isPendingDelete ? <Spinner /> : "Hapus Barang"}
