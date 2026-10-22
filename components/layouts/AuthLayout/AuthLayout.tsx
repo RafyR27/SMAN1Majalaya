@@ -18,8 +18,15 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <div className="relative z-10 flex h-full flex-col justify-end p-12">
           <div className="max-w-xl">
             <h2 className="text-4xl font-bold leading-tight text-background">
-              Penatausahaan Sarana Prasarana SMAN 1 Majalaya
+              BARAYA
             </h2>
+            <h2 className="text-3xl font-bold leading-tight text-background">
+              (Barang Aset Majalaya)
+            </h2>
+
+            <h3 className="mt-5 text-xl font-bold leading-tight text-background">
+              Penatausahaan Sarana Prasarana SMAN 1 Majalaya
+            </h3>
 
             <p className="mt-5 text-sm leading-relaxed text-background/75">
               Perum Citra Kebun Mas , Kec. Majalaya, Kab. Karawang, Prov. Jawa
@@ -53,7 +60,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Form Login */}
         <div className="w-full max-w-lg lg:max-w-sm mx-auto my-auto flex flex-col justify-center items-center gap-5 py-8">
           <div className="space-y-1 text-center">
-            <h1 className="font-bold text-xl sm:text-2xl text-foreground">Masuk</h1>
+            <h1 className="font-bold text-xl sm:text-2xl text-foreground">
+              Masuk
+            </h1>
             <p className="text-muted-foreground text-sm max-w-80 lg:max-w-full">
               Masukkan email dan password anda
             </p>
